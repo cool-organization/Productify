@@ -1,0 +1,9 @@
+UniverseId = 0
+
+[[Products]]
+Price = 10
+Name = "$50"
+
+[[Products]]
+Price = 20
+Name = "$100"
