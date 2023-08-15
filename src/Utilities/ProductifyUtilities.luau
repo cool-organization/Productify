@@ -4,7 +4,7 @@ local HashLib = require("../Packages/HashLib")
 local serde = require("@lune/serde")
 local t = require("../Packages/t")
 
-local ProductifyUtility = {}
+local ProductifyUtilities = {}
 
 export type ProductEntry = {
 	Name: string,
@@ -13,7 +13,7 @@ export type ProductEntry = {
 	ProductId: number?,
 	UploadHash: string?,
 }
-ProductifyUtility.IsProductEntry = t.strictInterface({
+ProductifyUtilities.IsProductEntry = t.strictInterface({
 	Name = t.string;
 	Price = t.integer;
 	Description = t.optional(t.string);
@@ -28,7 +28,7 @@ export type GamePassEntry = {
 	GamePassId: number?,
 	UploadHash: string?,
 }
-ProductifyUtility.IsGamePassEntry = t.strictInterface({
+ProductifyUtilities.IsGamePassEntry = t.strictInterface({
 	Name = t.string;
 	Price = t.integer;
 	Description = t.optional(t.string);
@@ -41,15 +41,15 @@ export type Productify = {
 	Products: {ProductEntry},
 	GamePasses: {GamePassEntry}?,
 }
-ProductifyUtility.IsProductify = t.strictInterface({
+ProductifyUtilities.IsProductify = t.strictInterface({
 	UniverseId = t.integer;
-	Products = t.array(ProductifyUtility.IsProductEntry);
-	GamePasses = t.optional(t.array(ProductifyUtility.IsGamePassEntry));
+	Products = t.array(ProductifyUtilities.IsProductEntry);
+	GamePasses = t.optional(t.array(ProductifyUtilities.IsGamePassEntry));
 })
 
 export type AnyProductEntry = ProductEntry | GamePassEntry
 
-function ProductifyUtility.GetHash(ProductEntry: AnyProductEntry)
+function ProductifyUtilities.GetHash(ProductEntry: AnyProductEntry)
 	return HashLib.base64_encode(HashLib.sha1(serde.encode("json", {
 		Description = ProductEntry.Description;
 		Name = ProductEntry.Name;
@@ -58,13 +58,13 @@ function ProductifyUtility.GetHash(ProductEntry: AnyProductEntry)
 	} :: {any}, false)))
 end
 
-assert(ProductifyUtility.GetHash({
+assert(ProductifyUtilities.GetHash({
 	Name = "test";
 	Price = 100;
 	Description = "test";
 	ProductId = 1;
 	UploadHash = "test";
-}) == ProductifyUtility.GetHash({
+}) == ProductifyUtilities.GetHash({
 	UploadHash = "test";
 	Name = "test";
 	Description = "test";
@@ -72,7 +72,7 @@ assert(ProductifyUtility.GetHash({
 	Price = 100;
 }), "Failed to check equality for GetHash?")
 
-function ProductifyUtility.IsProductEntryOutdated(ProductEntry: AnyProductEntry)
+function ProductifyUtilities.IsProductEntryOutdated(ProductEntry: AnyProductEntry)
 	if
 		(not (ProductEntry :: ProductEntry).ProductId and not (ProductEntry :: GamePassEntry).GamePassId)
 		or ProductEntry.UploadHash == nil
@@ -80,7 +80,7 @@ function ProductifyUtility.IsProductEntryOutdated(ProductEntry: AnyProductEntry)
 		return true
 	end
 
-	return ProductifyUtility.GetHash(ProductEntry) ~= ProductEntry.UploadHash
+	return ProductifyUtilities.GetHash(ProductEntry) ~= ProductEntry.UploadHash
 end
 
-return table.freeze(ProductifyUtility)
+return table.freeze(ProductifyUtilities)

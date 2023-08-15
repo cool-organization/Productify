@@ -1,9 +1,9 @@
 --!optimize 2
 --!strict
-local ProductifyUtility = require("./Utilities/ProductifyUtility")
+local ProductifyUtilities = require("./Utilities/ProductifyUtilities")
 
 local function Validate(ProductifyData: any)
-	assert(ProductifyUtility.IsProductify(ProductifyData))
+	assert(ProductifyUtilities.IsProductify(ProductifyData))
 end
 
 return Validate

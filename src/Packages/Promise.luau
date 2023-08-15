@@ -1142,8 +1142,6 @@ local function AndThen(self, traceback, successHandler, failureHandler, useSprea
 					if data._fromAll then
 						return oldSuccessHandler(table.unpack(data))
 					end
-
-					data._fromAll = nil
 				end
 
 				return oldSuccessHandler(data)
@@ -1157,8 +1155,30 @@ local function AndThen(self, traceback, successHandler, failureHandler, useSprea
 					if data._fromAll then
 						return oldFailureHandler(table.unpack(data))
 					end
+				end
 
+				return oldFailureHandler(data)
+			end
+		end
+	else
+		if successHandler then
+			local oldSuccessHandler = successHandler
+			function successHandler(data)
+				if type(data) == "table" then
 					data._fromAll = nil
+				end
+
+				return oldSuccessHandler(data)
+			end
+		end
+
+		if failureHandler then
+			local oldFailureHandler = failureHandler
+			function failureHandler(data)
+				if type(data) == "table" then
+					if data._fromAll then
+						data._fromAll = nil
+					end
 				end
 
 				return oldFailureHandler(data)

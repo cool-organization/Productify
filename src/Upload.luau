@@ -1,7 +1,7 @@
 --!optimize 2
 --!strict
 local FileSystemUtilities = require("./Utilities/FileSystemUtilities")
-local ProductifyUtility = require("./Utilities/ProductifyUtility")
+local ProductifyUtilities = require("./Utilities/ProductifyUtilities")
 local Promise = require("./Packages/Promise")
 local RobloxApiUtilities = require("./Utilities/RobloxApiUtilities")
 local SerdeUtilities = require("./Utilities/SerdeUtilities")
@@ -20,11 +20,11 @@ local GREEN_BOLD = GREEN .. BOLD
 local YELLOW = stdio.color("yellow")
 local YELLOW_BOLD = YELLOW .. BOLD
 
-type Productify = ProductifyUtility.Productify
-type ProductEntry = ProductifyUtility.ProductEntry
+type Productify = ProductifyUtilities.Productify
+type ProductEntry = ProductifyUtilities.ProductEntry
 
 local function Upload(ProductFile: string, ProductifyData: Productify)
-	assert(ProductifyUtility.IsProductify(ProductifyData))
+	assert(ProductifyUtilities.IsProductify(ProductifyData))
 
 	local Promises: {any} = {}
 	local Length = 0
@@ -40,7 +40,7 @@ local function Upload(ProductFile: string, ProductifyData: Productify)
 			then
 				local Cloned = table.clone(OtherProductEntry)
 				local NewProductEntry = OnFound(Cloned) or Cloned
-				NewProductEntry.UploadHash = ProductifyUtility.GetHash(OtherProductEntry)
+				NewProductEntry.UploadHash = ProductifyUtilities.GetHash(OtherProductEntry)
 				NewProductify.Products[Index] = NewProductEntry
 				break
 			end
@@ -48,7 +48,7 @@ local function Upload(ProductFile: string, ProductifyData: Productify)
 	end
 
 	for _, ProductEntry in ProductifyData.Products do
-		if not ProductifyUtility.IsProductEntryOutdated(ProductEntry) then
+		if not ProductifyUtilities.IsProductEntryOutdated(ProductEntry) then
 			continue
 		end
 

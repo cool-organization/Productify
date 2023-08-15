@@ -45,4 +45,20 @@ function SerdeUtilities.PromiseDecodeFile<T>(FilePath: string, _TemplateType: T)
 	end)
 end
 
+function SerdeUtilities.PromiseEncodeFile<T>(FilePath: string, Data: T): Promise.Promise
+	local FileExtension = FileSystemUtilities.GetFileExtension(FilePath)
+	if not FileExtension then
+		return Promise.Reject(`Cannot decode file {CYAN_BOLD}{FilePath}{RESET} (missing file extension?)`)
+	end
+
+	local EncodeTo: serde.EncodeDecodeFormat? = CAN_DECODE[string.lower(FileExtension)]
+	if not EncodeTo then
+		return Promise.Reject(`Cannot encode file {CYAN_BOLD}{FilePath}{RESET} (unsupported file extension)`)
+	end
+
+	return SerdeUtilities.PromiseEncode(EncodeTo, Data, true):Then(function(Contents)
+		return FileSystemUtilities.PromiseWriteFile(FilePath, Contents)
+	end)
+end
+
 return table.freeze(SerdeUtilities)
