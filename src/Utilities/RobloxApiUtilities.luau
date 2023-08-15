@@ -205,7 +205,7 @@ function RobloxApiUtilities.GetAllDeveloperProducts(UniverseId: number): Promise
 			Url = `https://apis.roblox.com/developer-products/v1/universes/{UniverseId}/developerproducts?pageNumber=1&pageSize=100`;
 		})
 	end):Then(HttpUtilities.ReturnBody):Then(HttpUtilities.PromiseDecode):Then(function(Products: {UploadResponse})
-		local Promises: {any} = table.clone(Products)
+		local Promises = {}
 		for Index, Product in Products do
 			Promises[Index] = PromiseProductInfoFromUpload(Product):Then(function(ProductInfo)
 				local New: any = table.clone(ProductInfo)
