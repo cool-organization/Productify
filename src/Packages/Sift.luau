@@ -39,10 +39,21 @@ do
 	local function CopyDeep<T>(Table: T): T
 		assert(type(Table) == "table", `Invalid argument #1 to 'CopyDeep' (expected table, got {typeof(Table)})`)
 
-		local New = table.clone(Table) :: any
-		for Key, Value in Table do
-			if type(Value) == "table" then
-				New[Key] = CopyDeep(Value)
+		local Success, New: any = pcall(table.clone, Table)
+		if Success then
+			for Key, Value in Table do
+				if type(Value) == "table" then
+					New[Key] = CopyDeep(Value)
+				end
+			end
+		else
+			New = {}
+			for Key, Value in Table do
+				if type(Value) == "table" then
+					New[Key] = CopyDeep(Value)
+				else
+					New[Key] = Value
+				end
 			end
 		end
 
