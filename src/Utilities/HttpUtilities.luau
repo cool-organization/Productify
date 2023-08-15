@@ -51,11 +51,7 @@ function HttpPromise.PromiseRequest(
 						Success = true;
 					})
 				else
-					Reject(
-						if Value.statusCode == 404
-							then `HTTP {Value.statusCode}: {Value.statusMessage} ({RequestDictionary.Url})`
-							else `HTTP {Value.statusCode}: {Value.statusMessage}`
-					)
+					Reject(`HTTP {Value.statusCode}: {Value.statusMessage} ({RequestDictionary.Url})`)
 				end
 			else
 				Resolve({
